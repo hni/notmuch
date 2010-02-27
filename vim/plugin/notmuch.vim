@@ -1285,6 +1285,23 @@ function! s:NM_combine_tags(word_prefix, words, separator, brackets)
         return res
 endfunction
 
+
+
+" --- completion helpers {{{1
+
+" support completion of one tag at a time
+
+function! NM_list_all_tags(A,L,P)
+        let tags = system('notmuch search-tags')
+        return tags  
+endfunction
+
+function! NM_list_all_tags_applied_to_message(A,L,P) 
+        let id = <SID>NM_show_message_id()
+        let tags = split(system('notmuch search-tags ' . id), '\n')
+        return tags 
+endfunction 
+
 " --- other helpers {{{1
 
 function! s:NM_get_search_words()
