@@ -1285,6 +1285,34 @@ function! s:NM_combine_tags(word_prefix, words, separator, brackets)
         return res
 endfunction
 
+
+" --- completion helpers {{{1
+
+" completion for any number of tags separated with whitespace
+function! NM_list_all_tags(A,L,P) 
+    let tags = split(system('notmuch search-tags'), '\n')
+    let word = matchstr(a:A, '\S*$') 
+    let wlen = len(word) 
+    if !empty(word) 
+        call filter(tags, 'v:val[0 : wlen - 1] ==# word') 
+    endif 
+    call map(tags, 'a:A . strpart(v:val, wlen)') 
+    return tags 
+endfunction 
+
+function! NM_list_all_tags_applied_to_message(A,L,P) 
+    let id = <SID>NM_show_message_id()
+    let tags = split(system('notmuch search-tags ' . id), '\n')
+    let word = matchstr(a:A, '\S*$') 
+    let wlen = len(word) 
+    if !empty(word) 
+        call filter(tags, 'v:val[0 : wlen - 1] ==# word') 
+    endif 
+    call map(tags, 'a:A . strpart(v:val, wlen)') 
+    return tags 
+endfunction 
+
+
 " --- other helpers {{{1
 
 function! s:NM_get_search_words()
